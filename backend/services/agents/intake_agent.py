@@ -78,3 +78,78 @@ If enough information has been collected across all required areas, set is_compl
             logger.error("IntakeAgent.get_next_question failed: %s", e)
             return {
                 "question": "Could you tell me more about what brought you here today?",
+                "area": "presenting_concern",
+                "rationale": "fallback question after agent error",
+                "is_complete": False,
+                "missing_areas_remaining": missing_areas,
+            }
+
+    def assess_completeness(
+        self,
+        conversation_history: List[Dict],
+        collected_fields: Dict,
+    ) -> Dict[str, Any]:
+        """
+        Assess which intake areas have been sufficiently covered and which are missing.
+        Returns structured coverage report.
+        """
+        system_prompt = self.load_prompt()
+        history_text = self._format_history(conversation_history)
+
+        messages = [
+            {
+                "role": "user",
+                "content": f"""Review the intake conversation and identify coverage.
+
+Conversation:
+{history_text}
+
+For each intake area below, assess whether sufficient information was collected:
+{json.dumps(ALL_AREAS)}
+
+Respond with JSON:
+{{
+  "covered_areas": ["area1", "area2"],
+  "missing_required_areas": ["area3"],
+  "missing_optional_areas": ["area4"],
+  "partial_areas": ["area5"],
+  "collected_fields": {{
+    "field_name": {{
+      "value": "...",
+      "turn_index": 3,
+      "confidence": 0.9
+    }}
+  }},
+  "ready_for_processing": true
+}}""",
+            }
+        ]
+
+        run = self._create_agent_run(case_id="assessment", input_summary="completeness assessment")
+        try:
+            result = self.llm.complete_json(
+                messages=messages,
+                system_prompt=system_prompt,
+                max_tokens=2048,
+            )
+            self._complete_agent_run(run, result)
+            return result
+        except Exception as e:
+            self._complete_agent_run(run, {}, error=str(e))
+            logger.error("IntakeAgent.assess_completeness failed: %s", e)
+            return {"covered_areas": [], "missing_required_areas": REQUIRED_AREAS, "ready_for_processing": False}
+
+    def run(self, case_id: str, conversation_history: List[Dict] = None, **kwargs) -> Dict[str, Any]:
+        """Full run mode: assess completeness of an existing conversation."""
+        conv = conversation_history or []
+        collected = kwargs.get("collected_fields", {})
+        return self.assess_completeness(conv, collected)
+
+    def _format_history(self, history: List[Dict]) -> str:
+        lines = []
+        for turn in history:
+            idx = turn.get("turn_index", "?")
+            role = turn.get("role", "unknown").upper()
+            content = turn.get("content", "")
+            lines.append(f"[Turn {idx}] {role}: {content}")
+        return "\n".join(lines) if lines else "(no conversation yet)"
