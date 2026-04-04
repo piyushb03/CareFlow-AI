@@ -68,3 +68,54 @@ Respond with JSON:
   "high_priority_signals": ["signal_name1"],
   "assessment_limitations": "what was not established"
 }}""",
+            }
+        ]
+
+        run = self._create_agent_run(case_id, f"Safety analysis: {len(conversation_history)} turns")
+        try:
+            result = self.llm.complete_json(
+                messages=messages,
+                system_prompt=system_prompt,
+                max_tokens=3000,
+            )
+            self._complete_agent_run(run, result)
+            self._log_audit(
+                case_id,
+                "agent_completed",
+                f"Safety Signal Agent completed. High priority: {result.get('high_priority_signals', [])}",
+                {"high_priority_signals": result.get("high_priority_signals", [])},
+            )
+            return result
+        except Exception as e:
+            self._complete_agent_run(run, {}, error=str(e))
+            logger.error("SafetySignalAgent.run failed: %s", e)
+            # Return a safe fallback — all signals marked not_assessed
+            return self._fallback_response(str(e))
+
+    def _fallback_response(self, error_msg: str) -> Dict:
+        signals = []
+        for signal_name in ALL_SIGNAL_NAMES:
+            signals.append({
+                "signal": signal_name,
+                "status": "not_assessed",
+                "evidence": "not established — agent error",
+                "source_turns": [],
+                "confidence": 0.0,
+                "uncertainty": f"Agent failed to complete analysis: {error_msg}",
+                "requires_reviewer_attention": True,
+            })
+        return {
+            "signals": signals,
+            "overall_safety_summary": "Safety analysis incomplete due to system error. Requires full human review.",
+            "high_priority_signals": [],
+            "assessment_limitations": f"System error: {error_msg}",
+        }
+
+    def _format_history(self, history: List[Dict]) -> str:
+        lines = []
+        for turn in history:
+            idx = turn.get("turn_index", "?")
+            role = turn.get("role", "unknown").upper()
+            content = turn.get("content", "")
+            lines.append(f"[Turn {idx}] {role}: {content}")
+        return "\n".join(lines) if lines else "(empty conversation)"
