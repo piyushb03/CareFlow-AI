@@ -73,3 +73,53 @@ For each intake area, structure the output as:
 
 Also include:
 {{
+  "missing_information": ["list of important missing fields"],
+  "contradictions": [
+    {{
+      "field": "field_name",
+      "description": "what conflicts",
+      "turn_a": 2,
+      "turn_b": 7,
+      "evidence_a": "quote",
+      "evidence_b": "quote"
+    }}
+  ],
+  "presenting_summary": "1-2 sentence factual summary using patient's own words where possible",
+  "structured_areas": {{ ... }}
+}}""",
+            }
+        ]
+
+        run = self._create_agent_run(case_id, f"Structuring: {len(conversation_history)} turns")
+        try:
+            result = self.llm.complete_json(
+                messages=messages,
+                system_prompt=system_prompt,
+                max_tokens=4096,
+            )
+            self._complete_agent_run(run, result)
+            self._log_audit(
+                case_id,
+                "agent_completed",
+                f"Structuring Agent completed. Missing: {result.get('missing_information', [])}",
+            )
+            return result
+        except Exception as e:
+            self._complete_agent_run(run, {}, error=str(e))
+            logger.error("StructuringAgent.run failed: %s", e)
+            return {
+                "structured_areas": {},
+                "missing_information": ["complete — agent error"],
+                "contradictions": [],
+                "presenting_summary": f"Structuring agent failed: {str(e)}",
+                "error": str(e),
+            }
+
+    def _format_history(self, history: List[Dict]) -> str:
+        lines = []
+        for turn in history:
+            idx = turn.get("turn_index", "?")
+            role = turn.get("role", "unknown").upper()
+            content = turn.get("content", "")
+            lines.append(f"[Turn {idx}] {role}: {content}")
+        return "\n".join(lines) if lines else "(empty conversation)"
