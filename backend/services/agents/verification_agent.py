@@ -68,3 +68,71 @@ For each issue found, create:
   "source_turns": [1, 3],
   "recommended_fix": "specific recommended correction"
 }}
+
+Respond with JSON:
+{{
+  "verification_passed": true,
+  "issues": [],
+  "high_severity_count": 0,
+  "medium_severity_count": 0,
+  "low_severity_count": 0,
+  "overall_quality": "high|medium|low",
+  "revision_required": false,
+  "revision_instructions": "specific instructions for revision if needed",
+  "verifier_notes": "general notes for reviewer"
+}}
+
+verification_passed = true only if there are NO high-severity issues.
+revision_required = true if any medium or high severity issues found.""",
+            }
+        ]
+
+        run = self._create_agent_run(case_id, "Verification of structured summary and safety signals")
+        try:
+            result = self.llm.complete_json(
+                messages=messages,
+                system_prompt=system_prompt,
+                max_tokens=3000,
+            )
+            self._complete_agent_run(run, result, verification_result="passed" if result.get("verification_passed") else "failed")
+            self._log_audit(
+                case_id,
+                "verification_passed" if result.get("verification_passed") else "verification_failed",
+                f"Verification: {len(result.get('issues', []))} issues found",
+                {
+                    "issues_count": len(result.get("issues", [])),
+                    "high_severity": result.get("high_severity_count", 0),
+                    "revision_required": result.get("revision_required", False),
+                },
+            )
+            return result
+        except Exception as e:
+            self._complete_agent_run(run, {}, error=str(e))
+            logger.error("VerificationAgent.run failed: %s", e)
+            return {
+                "verification_passed": False,
+                "issues": [{
+                    "type": "other",
+                    "severity": "high",
+                    "description": f"Verification agent failed: {str(e)}",
+                    "evidence": None,
+                    "source_turns": [],
+                    "recommended_fix": "Manual verification required",
+                }],
+                "high_severity_count": 1,
+                "medium_severity_count": 0,
+                "low_severity_count": 0,
+                "overall_quality": "low",
+                "revision_required": True,
+                "revision_instructions": "Complete re-verification required",
+                "verifier_notes": f"Agent error: {str(e)}",
+            }
+
+    def _format_history(self, history: List[Dict]) -> str:
+        lines = []
+        for turn in history:
+            idx = turn.get("turn_index", "?")
+            role = turn.get("role", "unknown").upper()
+            content = turn.get("content", "")
+            lines.append(f"[Turn {idx}] {role}: {content}")
+        return "\n".join(lines) if lines else "(empty conversation)"
