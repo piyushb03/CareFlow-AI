@@ -338,3 +338,187 @@ Fix all identified issues. Do not introduce new unsupported claims.""",
         issues = verification_result.get("issues", []) if verification_result else []
         high_sev_issues = [i for i in issues if i.get("severity") == "high"]
 
+        # Priority level
+        if high_priority_signals or high_sev_issues:
+            reviewer_priority = "HIGH"
+        elif contradictions or (len(missing_fields) > 3):
+            reviewer_priority = "MEDIUM"
+        else:
+            reviewer_priority = "STANDARD"
+
+        # Uncertainty summary
+        all_signals = safety_result.get("signals", [])
+        not_assessed = [s["signal"] for s in all_signals if s.get("status") == "not_assessed"]
+        unclear = [s["signal"] for s in all_signals if s.get("status") == "unclear"]
+
+        brief = {
+            "generated_at": datetime.utcnow().isoformat(),
+            "case_id": case_id,
+            "disclaimer": (
+                "IMPORTANT: This document is an AI-assisted intake preparation tool. "
+                "It is NOT a clinical assessment, diagnosis, or treatment recommendation. "
+                "All information requires verification and judgment by a qualified mental health professional. "
+                "This document does not substitute for professional clinical assessment."
+            ),
+            "reviewer_priority": reviewer_priority,
+
+            # Section 1: Case Overview
+            "case_overview": {
+                "turn_count": len(conversation_history),
+                "verification_status": "passed" if verification_passed else "requires_human_review",
+                "verification_attempts": retry_count + 1,
+                "processing_status": "ready_for_qualified_reviewer",
+            },
+
+            # Section 2: Presenting Concerns
+            "presenting_concerns": structured_result.get("presenting_summary", "Not established"),
+
+            # Section 3: Structured Information
+            "structured_information": structured_result.get("structured_areas", {}),
+
+            # Section 4: Safety Signals (for reviewer attention)
+            "safety_signals": {
+                "note": "These are signals for qualified reviewer attention — not diagnoses or clinical conclusions.",
+                "high_priority": high_priority_signals,
+                "all_signals": safety_result.get("signals", []),
+                "overall_summary": safety_result.get("overall_safety_summary", ""),
+                "limitations": safety_result.get("assessment_limitations", ""),
+            },
+
+            # Section 5: Missing Information
+            "missing_information": missing_fields,
+
+            # Section 6: Contradictions
+            "contradictions": contradictions,
+
+            # Section 7: Uncertainty
+            "uncertainty": {
+                "not_assessed_signals": not_assessed,
+                "unclear_signals": unclear,
+                "low_confidence_fields": self._get_low_confidence_fields(structured_result),
+                "summary": (
+                    f"{len(not_assessed)} signals not assessed, "
+                    f"{len(unclear)} signals unclear, "
+                    f"{len(missing_fields)} required fields missing."
+                ),
+            },
+
+            # Section 8: Verification Status
+            "verification": {
+                "status": "passed" if verification_passed else "requires_human_review",
+                "attempts": retry_count + 1,
+                "issues": verification_result.get("issues", []) if verification_result else [],
+                "notes": verification_result.get("verifier_notes", "") if verification_result else "",
+            },
+
+            # Section 9: Reviewer Attention Priorities
+            "reviewer_attention_priorities": self._build_priorities(
+                high_priority_signals, contradictions, missing_fields, not_assessed, high_sev_issues
+            ),
+
+            # Section 10: Human Review Requirement
+            "human_review_required": {
+                "required": True,
+                "reason": (
+                    "All CareFlow AI outputs require review by a qualified mental health professional "
+                    "before any clinical action is taken. This system prepares information for review "
+                    "but does not make clinical decisions."
+                ),
+                "status": "AWAITING_QUALIFIED_REVIEWER",
+            },
+        }
+
+        return brief
+
+    def _get_low_confidence_fields(self, structured_result: Dict) -> List[str]:
+        low_confidence = []
+        for area_name, fields in structured_result.get("structured_areas", {}).items():
+            if isinstance(fields, dict):
+                for field_name, field_data in fields.items():
+                    if isinstance(field_data, dict):
+                        conf = field_data.get("confidence", 1.0)
+                        if conf is not None and conf < 0.7:
+                            low_confidence.append(f"{area_name}.{field_name} (conf={conf:.2f})")
+        return low_confidence
+
+    def _build_priorities(
+        self,
+        high_priority_signals: List,
+        contradictions: List,
+        missing_fields: List,
+        not_assessed: List,
+        high_sev_issues: List,
+    ) -> List[Dict]:
+        priorities = []
+
+        if high_priority_signals:
+            priorities.append({
+                "priority": "URGENT",
+                "area": "Safety Signals",
+                "description": (
+                    f"Potential safety-related language detected in {len(high_priority_signals)} signal area(s). "
+                    "Current status is not fully established. Qualified reviewer assessment required."
+                ),
+                "signals": high_priority_signals,
+            })
+
+        if contradictions:
+            priorities.append({
+                "priority": "HIGH",
+                "area": "Contradictions",
+                "description": f"{len(contradictions)} contradiction(s) detected in reported information. Reviewer clarification needed.",
+                "count": len(contradictions),
+            })
+
+        if missing_fields:
+            priorities.append({
+                "priority": "MEDIUM",
+                "area": "Missing Information",
+                "description": f"{len(missing_fields)} important field(s) not established during intake.",
+                "fields": missing_fields[:5],
+            })
+
+        if not_assessed:
+            priorities.append({
+                "priority": "MEDIUM",
+                "area": "Unassessed Safety Areas",
+                "description": f"{len(not_assessed)} safety-relevant area(s) not established in conversation.",
+                "signals": not_assessed,
+            })
+
+        if high_sev_issues:
+            priorities.append({
+                "priority": "HIGH",
+                "area": "Verification Issues",
+                "description": f"{len(high_sev_issues)} high-severity verification issue(s) require reviewer attention.",
+                "count": len(high_sev_issues),
+            })
+
+        if not priorities:
+            priorities.append({
+                "priority": "STANDARD",
+                "area": "Routine Review",
+                "description": "No high-priority issues detected. Standard qualified reviewer assessment required.",
+            })
+
+        return priorities
+
+    def _save_trajectory(self, case_id: str, trajectory: Dict):
+        """Save trajectory JSON to file for judge inspection."""
+        trajectories_dir = os.environ.get("TRAJECTORIES_DIR", "trajectories")
+        os.makedirs(trajectories_dir, exist_ok=True)
+        path = os.path.join(trajectories_dir, f"{case_id}.json")
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(trajectory, f, indent=2)
+
+    def _audit(self, case_id: str, event_type: str, description: str, metadata: Optional[Dict] = None):
+        from backend.models.audit import AuditEvent
+        event = AuditEvent(
+            case_id=case_id,
+            event_type=event_type,
+            actor="orchestrator",
+            description=description,
+            metadata_json=json.dumps(metadata) if metadata else None,
+        )
+        db.session.add(event)
+        db.session.commit()
