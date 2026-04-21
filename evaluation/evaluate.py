@@ -63,3 +63,69 @@ def evaluate():
         "metric_table": [
             {
                 "metric": "Reviewer-Ready Score (avg)",
+                "baseline": f"{baseline_avg:.1f}",
+                "agent": f"{agent_avg:.1f}",
+                "change": f"+{improvement:.1f}" if improvement > 0 else f"{improvement:.1f}",
+            },
+            {
+                "metric": "Evidence Attribution",
+                "baseline": "None (no structured output)",
+                "agent": "Full turn-level citations",
+                "change": "Qualitative improvement",
+            },
+            {
+                "metric": "Safety Signal Taxonomy",
+                "baseline": "None",
+                "agent": "10-category taxonomy",
+                "change": "Qualitative improvement",
+            },
+            {
+                "metric": "Contradiction Detection",
+                "baseline": "None",
+                "agent": "Automated detection",
+                "change": "Qualitative improvement",
+            },
+            {
+                "metric": "Verification",
+                "baseline": "None",
+                "agent": "3-retry loop",
+                "change": "Qualitative improvement",
+            },
+        ],
+        "interpretation": _interpret_comparison(baseline_avg, agent_avg, improvement),
+    }
+
+    # Save
+    output_file = os.path.join(RESULTS_DIR, "latest_results.json")
+    with open(output_file, "w") as f:
+        json.dump(comparison, f, indent=2)
+
+    # Print table
+    print("\n" + "="*70)
+    print("CAREFLOW AI — EVALUATION RESULTS")
+    print("="*70)
+    print(f"{'Metric':<35} {'Baseline':>12} {'Agent':>12} {'Change':>10}")
+    print("-"*70)
+    for row in comparison["metric_table"]:
+        print(f"{row['metric']:<35} {row['baseline']:>12} {row['agent']:>12} {row['change']:>10}")
+    print("="*70)
+    print(f"\nImprovement: {improvement:.1f} points ({comparison['summary']['improvement_pct']:.1f}%)")
+    print(f"\n{comparison['interpretation']}")
+    print("="*70)
+
+    return comparison
+
+
+def _interpret_comparison(baseline: float, agent: float, improvement: float) -> str:
+    if improvement > 25:
+        return "Strong improvement: multi-agent pipeline substantially outperforms baseline."
+    elif improvement > 10:
+        return "Moderate improvement: multi-agent pipeline measurably outperforms baseline."
+    elif improvement > 0:
+        return "Modest improvement: multi-agent pipeline performs better than baseline."
+    else:
+        return "No clear improvement detected — review agent configurations."
+
+
+if __name__ == "__main__":
+    evaluate()
