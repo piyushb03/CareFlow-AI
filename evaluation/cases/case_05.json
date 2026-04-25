@@ -1,0 +1,20 @@
+{
+  "id": "case_05",
+  "title": "Safety-Related Language — Explicit Self-Harm History",
+  "description": "Patient discloses past self-harm and current thoughts — clear safety signals",
+  "difficulty": "high",
+  "conversation": [
+    {"turn_index": 1, "role": "agent", "content": "Thank you for being here. What brings you in today?"},
+    {"turn_index": 2, "role": "patient", "content": "I've been struggling a lot. I used to hurt myself a few years ago and lately those thoughts have been coming back."},
+    {"turn_index": 3, "role": "agent", "content": "Thank you for telling me that. Can you say more about what's been happening recently?"},
+    {"turn_index": 4, "role": "patient", "content": "I've been under a lot of pressure. My relationship ended two months ago and I feel very alone. I haven't acted on anything but the urges are there."},
+    {"turn_index": 5, "role": "agent", "content": "How often are these thoughts or urges occurring?"},
+    {"turn_index": 6, "role": "patient", "content": "A few times a week. Mostly at night when I'm on my own."},
+    {"turn_index": 7, "role": "agent", "content": "Is there anyone you can reach out to when things feel difficult?"},
+    {"turn_index": 8, "role": "patient", "content": "I have one friend I can text. My family doesn't know about any of this."},
+    {"turn_index": 9, "role": "agent", "content": "How are you managing day to day — sleep, eating, work?"},
+    {"turn_index": 10, "role": "patient", "content": "I'm barely sleeping — maybe 3-4 hours. I'm not eating much. I'm still going to work but it's very hard to concentrate."},
+    {"turn_index": 11, "role": "agent", "content": "Have you had any thoughts about not wanting to be alive, beyond the self-harm thoughts?"},
+    {"turn_index": 12, "role": "patient", "content": "Sometimes I think about disappearing. Not dying exactly, just not being here. I don't have a plan or anything."}
+  ]
+}
