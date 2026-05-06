@@ -1,0 +1,20 @@
+{
+  "id": "case_08",
+  "title": "Irrelevant Information — Tangential Content",
+  "description": "Patient introduces irrelevant details; system must extract relevant information only",
+  "difficulty": "moderate",
+  "conversation": [
+    {"turn_index": 1, "role": "agent", "content": "What brings you here today?"},
+    {"turn_index": 2, "role": "patient", "content": "Well, I've been having trouble with anxiety. But first I want to say that I found this service through my neighbor who has a dog — a golden retriever. Very nice dog. Anyway."},
+    {"turn_index": 3, "role": "agent", "content": "Tell me about the anxiety you've been experiencing."},
+    {"turn_index": 4, "role": "patient", "content": "It started about four months ago when I started a new job. The commute is 45 minutes by bus — the 47 route actually. The anxiety is about making mistakes at work."},
+    {"turn_index": 5, "role": "agent", "content": "How does the anxiety show up for you physically or mentally?"},
+    {"turn_index": 6, "role": "patient", "content": "I get a racing heart before big meetings. I replay conversations in my head for hours. I bought a new journal to write things down — got it from that stationery shop on the high street."},
+    {"turn_index": 7, "role": "agent", "content": "How has this been affecting your sleep?"},
+    {"turn_index": 8, "role": "patient", "content": "Not great. About 6 hours. I wake up and immediately start thinking about work. My cat also wakes me up sometimes — she's called Muffin."},
+    {"turn_index": 9, "role": "agent", "content": "Have you had any thoughts of harming yourself?"},
+    {"turn_index": 10, "role": "patient", "content": "No, definitely not. I enjoy life generally. I love my cat and gardening."},
+    {"turn_index": 11, "role": "agent", "content": "Do you have support from others?"},
+    {"turn_index": 12, "role": "patient", "content": "Yes, my husband is supportive. We've been married 12 years. We met at university — he was studying economics."}
+  ]
+}

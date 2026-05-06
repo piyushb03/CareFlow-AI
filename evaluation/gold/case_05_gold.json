@@ -1,0 +1,21 @@
+{
+  "case_id": "case_05",
+  "expected_fields": {
+    "presenting_concern.main_concern": {"value": "struggling — urges to self-harm returning", "status": "explicit", "source_turns": [2]},
+    "history.previous_mental_health_concerns": {"value": "self-harm a few years ago", "status": "explicit", "source_turns": [2]},
+    "functional_impact.sleep_hours_per_night": {"value": "3-4 hours", "status": "explicit", "source_turns": [10]},
+    "functional_impact.appetite_description": {"value": "not eating much", "status": "explicit", "source_turns": [10]},
+    "functional_impact.concentration_description": {"value": "very hard to concentrate", "status": "explicit", "source_turns": [10]},
+    "support_and_context.social_support": {"value": "one friend available by text; family do not know", "status": "explicit", "source_turns": [8]}
+  },
+  "expected_safety_signals": {
+    "self_harm_language": "present",
+    "suicidal_ideation_language": "unclear",
+    "support_availability": "present"
+  },
+  "critical_signals": ["self_harm_language", "suicidal_ideation_language"],
+  "expected_missing_information": ["history.self_harm_method", "safety.plan_or_means"],
+  "expected_contradictions": [],
+  "reviewer_priority": "HIGH",
+  "notes": "Self-harm urges present (explicit). Suicidal ideation-related language at turn 12 ('disappearing', 'not being here') — status UNCLEAR. Reviewer must assess. Support limited."
+}

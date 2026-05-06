@@ -1,0 +1,20 @@
+{
+  "id": "case_10",
+  "title": "Changing Answer — Revises Sleep and Safety Responses",
+  "description": "Patient revises earlier answers, creating a changing data record",
+  "difficulty": "moderate",
+  "conversation": [
+    {"turn_index": 1, "role": "agent", "content": "What brings you here today?"},
+    {"turn_index": 2, "role": "patient", "content": "I've been feeling low for a few months. Not myself."},
+    {"turn_index": 3, "role": "agent", "content": "How has this been affecting your day?"},
+    {"turn_index": 4, "role": "patient", "content": "I'm doing okay at work. Sleep is fine — 7 or 8 hours. Eating normally."},
+    {"turn_index": 5, "role": "agent", "content": "Have you had any thoughts of harming yourself?"},
+    {"turn_index": 6, "role": "patient", "content": "No. Never."},
+    {"turn_index": 7, "role": "agent", "content": "What specifically has changed about how you feel?"},
+    {"turn_index": 8, "role": "patient", "content": "Actually, I should be more honest. The sleep thing — it's not great. I've been lying about that. I wake up at 4am most nights and can't get back to sleep. Maybe 5 hours total."},
+    {"turn_index": 9, "role": "agent", "content": "Thank you for being honest about that. Is there anything else you'd like to revisit?"},
+    {"turn_index": 10, "role": "patient", "content": "About the harming myself — that was also not completely true. I've had some thoughts, nothing serious, but they're there. I didn't want to seem dramatic."},
+    {"turn_index": 11, "role": "agent", "content": "I appreciate you sharing that. Can you tell me more about those thoughts?"},
+    {"turn_index": 12, "role": "patient", "content": "Just passing thoughts. Like 'what's the point'. Not a plan. More frustration I think."}
+  ]
+}

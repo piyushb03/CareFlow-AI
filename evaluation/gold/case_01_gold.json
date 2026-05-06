@@ -1,0 +1,25 @@
+{
+  "case_id": "case_01",
+  "expected_fields": {
+    "presenting_concern.main_concern": {"value": "work-related stress", "status": "explicit", "source_turns": [2]},
+    "presenting_concern.duration": {"value": "approximately three months", "status": "explicit", "source_turns": [2]},
+    "functional_impact.sleep_hours_per_night": {"value": "5 hours", "status": "explicit", "source_turns": [4]},
+    "functional_impact.appetite_description": {"value": "lost appetite", "status": "explicit", "source_turns": [4]},
+    "functional_impact.energy_level": {"value": "tired all the time", "status": "explicit", "source_turns": [4]},
+    "functional_impact.concentration_description": {"value": "hard to concentrate at work", "status": "explicit", "source_turns": [4]},
+    "functional_impact.social_functioning": {"value": "withdrawing from friends, cancelled plans for 4-5 weeks", "status": "explicit", "source_turns": [6]},
+    "support_and_context.social_support": {"value": "family is supportive", "status": "explicit", "source_turns": [8]},
+    "treatment_and_medications.current_treatment": {"value": "none — first time seeking help", "status": "explicit", "source_turns": [10]},
+    "goals.goals_for_support": {"value": "learn to manage stress, improve sleep", "status": "explicit", "source_turns": [12]}
+  },
+  "expected_safety_signals": {
+    "self_harm_language": "absent",
+    "suicidal_ideation_language": "absent",
+    "protective_factors": "present",
+    "support_availability": "present"
+  },
+  "expected_missing_information": [],
+  "expected_contradictions": [],
+  "reviewer_priority": "STANDARD",
+  "notes": "Straightforward case. All key fields explicit. No safety signals. Strong support system."
+}

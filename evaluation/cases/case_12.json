@@ -1,0 +1,22 @@
+{
+  "id": "case_12",
+  "title": "Low-Concern Case — Mild Adjustment Difficulties",
+  "description": "Presenting concerns are mild, safety signals absent, strong support system",
+  "difficulty": "standard",
+  "conversation": [
+    {"turn_index": 1, "role": "agent", "content": "What brings you here today?"},
+    {"turn_index": 2, "role": "patient", "content": "I recently moved to a new city for work and I'm finding it harder than expected to settle in. I feel a bit isolated."},
+    {"turn_index": 3, "role": "agent", "content": "How long have you been in the new city?"},
+    {"turn_index": 4, "role": "patient", "content": "About four months. The job is going well, I enjoy it. But I miss my friends and family."},
+    {"turn_index": 5, "role": "agent", "content": "How has the isolation been affecting you day to day?"},
+    {"turn_index": 6, "role": "patient", "content": "I feel a bit lonely in the evenings and weekends. During work I'm fine. I've been cooking more which helps."},
+    {"turn_index": 7, "role": "agent", "content": "How about sleep and general wellbeing?"},
+    {"turn_index": 8, "role": "patient", "content": "Sleep is good — about 7-8 hours. Eating well. Energy is fine. No real complaints there."},
+    {"turn_index": 9, "role": "agent", "content": "Have you had any thoughts of harming yourself?"},
+    {"turn_index": 10, "role": "patient", "content": "No, not at all. I'm fundamentally okay. Just a bit homesick I think."},
+    {"turn_index": 11, "role": "agent", "content": "Do you have support you can access — friends or family, even remotely?"},
+    {"turn_index": 12, "role": "patient", "content": "Yes. I call my parents weekly and I have a group of close friends I stay in touch with. I'm also starting to meet people at work."},
+    {"turn_index": 13, "role": "agent", "content": "What are you hoping to get from speaking with someone?"},
+    {"turn_index": 14, "role": "patient", "content": "Just some strategies to build connections more quickly and manage the adjustment better. I don't think it's anything serious."}
+  ]
+}

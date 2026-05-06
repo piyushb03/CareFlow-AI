@@ -1,0 +1,20 @@
+{
+  "id": "case_02",
+  "title": "Incomplete Information — Avoids Key Questions",
+  "description": "Patient is vague and avoids answering safety and history questions",
+  "difficulty": "moderate",
+  "conversation": [
+    {"turn_index": 1, "role": "agent", "content": "Thank you for reaching out. Could you start by telling me what brings you here today?"},
+    {"turn_index": 2, "role": "patient", "content": "I just haven't been feeling well. I don't really know how to explain it."},
+    {"turn_index": 3, "role": "agent", "content": "Take your time. Can you tell me a bit more about what 'not feeling well' means for you?"},
+    {"turn_index": 4, "role": "patient", "content": "I don't know. Just... bad. For a while now."},
+    {"turn_index": 5, "role": "agent", "content": "Is there anything specific that's been happening in your life that might be connected?"},
+    {"turn_index": 6, "role": "patient", "content": "Not really. Things are just hard."},
+    {"turn_index": 7, "role": "agent", "content": "How has this been affecting your sleep?"},
+    {"turn_index": 8, "role": "patient", "content": "It's okay I guess. Not great."},
+    {"turn_index": 9, "role": "agent", "content": "I want to check in with you about your overall wellbeing — have you had any thoughts of harming yourself?"},
+    {"turn_index": 10, "role": "patient", "content": "I'd rather not talk about that right now."},
+    {"turn_index": 11, "role": "agent", "content": "That's okay, we don't need to go there now. Do you have people around you for support?"},
+    {"turn_index": 12, "role": "patient", "content": "Some. I don't know."}
+  ]
+}
