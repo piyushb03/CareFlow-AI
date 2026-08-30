@@ -361,7 +361,12 @@ python -m flake8 backend/
 
 ## License
 
-MIT — Hackathon demonstration only. Not for clinical use.
+This project is released under the MIT License.
+
+The application is a hackathon demonstration using synthetic data only.
+It is not a clinical tool and must not be used with real patients.
+
+**CareFlow AI was developed with AI-assisted software engineering using Claude Code.**
 
 ---
 
