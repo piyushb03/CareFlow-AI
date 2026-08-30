@@ -38,12 +38,12 @@ export default function Landing() {
           Agentic Clinical Intake & Triage Orchestrator
         </div>
 
-        <h1 className="text-5xl font-bold text-white leading-tight mb-4">
+        <h1 className="text-5xl md:text-6xl font-bold text-white leading-tight mb-4">
           Evidence-Grounded{' '}
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-clinical-400 to-violet-400">
+          <span style={{ background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
             Intake Preparation
-          </span>{' '}
-          <br />for Mental Health Review
+          </span>
+          {' '}for Mental Health Review
         </h1>
 
         <p className="text-xl text-gray-400 leading-relaxed max-w-2xl mx-auto mb-3">
