@@ -5,6 +5,8 @@
 > *AI-assisted intake preparation for mental health professionals — not a diagnostic system.*
 
 ---
+### 🚀 Demo
+[Project Demo](https://drive.google.com/file/d/1RIFAXS-772fdqwq6NSJsnuEavTlokyOM/view?usp=drivesdk)
 
 ## ⚠️ Important Disclaimer
 
